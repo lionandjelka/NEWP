@@ -11,7 +11,7 @@ from periodicity.algorithms.wavelets import *
 
 ###get QSO which have u,g,r,i, light curves >=100 points
 
-def get_qso(set11):
+def get_qso(fs_gp,set11):
     sett = []
     for set1 in range(len(set11)):
         demo_lc = fs_gp.get_group(str(set11[set1]))
