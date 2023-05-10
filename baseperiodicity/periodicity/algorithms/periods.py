@@ -9,6 +9,69 @@ from sklearn.utils import shuffle
 from periodicity.utils.correlation import correlation_nd
 from periodicity.algorithms.wavelets import *
 
+###get QSO which have u,g,r,i, light curves >=100 points
+
+def get_qso(set11):
+    sett = []
+    for set1 in range(len(set11)):
+        demo_lc = fs_gp.get_group(str(set11[set1]))
+        d0 = demo_lc[demo_lc['filter'] == 1].sort_values(by=['mjd'])
+        d1 = demo_lc[demo_lc['filter'] == 2].sort_values(by=['mjd'])
+        d2 = demo_lc[demo_lc['filter'] == 3].sort_values(by=['mjd'])
+        d3 = demo_lc[demo_lc['filter'] == 4].sort_values(by=['mjd'])
+        d4 = demo_lc[demo_lc['filter'] == 5].sort_values(by=['mjd'])      
+        if (len(d0) >= 100) and (len(d1) >=100) and (len(d2) > 100) and (len(d3) >=100):
+            sett.append(str(set11[set1]))
+    return sett
+def outliers(time,flux):
+# Compute the Z-Score for each point in the light curve
+  z_scores = np.abs((flux - np.mean(flux)) / np.std(flux))
+
+# Define a threshold for outlier detection
+  threshold = 3.0
+
+# Find the indices of the non-outlier points. 
+  good_indices = np.where(z_scores <= threshold)[0]
+
+# Create a new array with only the non-outlier points
+  clean_flux = flux[good_indices]
+  clean_time = time[good_indices]
+  if len(clean_flux)<0.1*len(flux):
+     clean_time=time
+     clean_flux=flux
+ # clean_err=err[good_indices]
+  return clean_time, clean_flux#,clean_err
+
+def get_lc22(set1):
+    demo_lc = fs_gp.get_group(set1)
+    d0 = demo_lc[(demo_lc['filter'] == 1) ].sort_values(by=['mjd'])
+    d1 = demo_lc[(demo_lc['filter'] == 2) ].sort_values(by=['mjd'])
+    d2 = demo_lc[(demo_lc['filter'] == 3) ].sort_values(by=['mjd'])
+    d3 = demo_lc[(demo_lc['filter'] == 4) ].sort_values(by=['mjd'])
+  #  d4 = demo_lc[(demo_lc['filter'] == 5) ].sort_values(by=['mjd'])
+    tt00 = d0['mjd'].to_numpy()
+    yy00 = d0['psMag'].to_numpy()
+    tt11 = d1['mjd'].to_numpy()
+    yy11 = d1['psMag'].to_numpy()
+    tt22 = d2['mjd'].to_numpy()
+    yy22 = d2['psMag'].to_numpy()
+    tt33 = d3['mjd'].to_numpy()
+    yy33 = d3['psMag'].to_numpy()
+   # tt4 = d4['mjd'].to_numpy()
+   # yy4 = d4['psMag'].to_numpy()
+    tt0,yy0=outliers(tt00,yy00)
+    print('ppp')
+    tt1,yy1=outliers(tt11,yy11)
+    print('p1')
+    tt2,yy2=outliers(tt22,yy22)
+    tt3,yy3=outliers(tt33,yy33)
+    sampling0 = np.mean(np.diff(tt0))
+    sampling1 = np.mean(np.diff(tt1))
+    sampling2 = np.mean(np.diff(tt2))
+    sampling3 = np.mean(np.diff(tt3))
+  #  sampling4 = np.mean(np.diff(tt4))
+    return tt0, yy0, tt1, yy1, tt2, yy2, tt3, yy3, sampling0, sampling1, sampling2, sampling3
+
 
 def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, peaks1, hh1,tt1,yy1):
     r_periods0=np.array(r_periods0)
@@ -80,7 +143,46 @@ def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, pe
 
 
     return np.array(r_periods), np.array(up),np.array(low), np.array(sig)
+def process1(set1):
+    det_periods=[]
+    tt0,yy0, tt1,yy1,tt2,yy2,tt3,yy3,sampling0,sampling1,sampling2,sampling3=get_lc22(set1)
+    wwz_matrx0,  corr0, extent0 = hybrid2d(tt0, yy0, 80, 800, minfq=2000., maxfq=10.)
+    peaks0,hh0,r_periods0, up0, low0 = periods (int(set1), corr0, 800, plot=False)
+    wwzmatrx1, corr1, extent1 = hybrid2d(tt1,yy1, 80, 800, minfq=2000., maxfq=10.)
+    peaks1,hh1,r_periods1, up1, low1 = periods (int(set1), corr1, 800, plot=False)
+    wwz_matrx2,  corr2, extent2 = hybrid2d(tt2, yy2, 80, 800, minfq=2000., maxfq=10.)
+    peaks2,hh2,r_periods2, up2, low2 = periods (int(set1), corr2, 800, plot=False)
+    wwzmatrx3, corr3, extent3 = hybrid2d(tt3,yy3, 80, 800, minfq=2000., maxfq=10.)
+    peaks3,hh3,r_periods3, up3, low3 = periods (int(set1), corr3, 800, plot=False)
+    r_periods01, u01,low01,sig01=same_periods(r_periods0,r_periods1,up0,low0,up1,low1,peaks0,hh0,tt0,yy0, peaks1,hh1,tt1,yy1)
+    print(set1)
+   # for j in range(len(r_periods01)):
+    if  r_periods01.size>0 and  u01.size>0 and low01.size>0 and sig01.size>0: 
+      for j in range(len(r_periods01.ravel())):
+        #u=1,g=2,r=3,i=4,z=5
+        det_periods.append([int(set1),sampling0,sampling1,r_periods01[j], u01[j],low01[j], sig01[j], 12])
+    elif r_periods01.size==0:
+        det_periods.append([int(set1),0,0,0, 0,0,0,12])
+   
+    r_periods02, u02,low02,sig02=same_periods(r_periods0,r_periods2,up0,low0,up2,low2,peaks0, hh0,tt0,yy0, peaks2,hh2,tt2,yy2)
 
+   # for j in range(len(r_periods01)):
+    if  r_periods02.size>0 and u02.size>0 and low02.size>0 and sig02.size>0:
+      #ur=02
+      for j in range(len(r_periods02.ravel())):
+       det_periods.append([int(set1),sampling0,sampling2,r_periods02[j], u02[j],low02[j],sig02[j], 13])
+    elif r_periods02.size==0:
+       #ur=02
+       det_periods.append([int(set1),0,0,0, 0,0,0,13])
+    r_periods03, u03,low03,sig03=same_periods(r_periods0,r_periods3, up0,low0, up3,low3,peaks0, hh0,tt0,yy0, peaks3,hh3,tt3,yy3)
+    if  r_periods03.size  and  u03.size>0 and low03.size>0 and sig03.size>0:
+     for j in range(len(r_periods03.ravel())):
+       #ui=03
+      det_periods.append([int(set1),sampling0,sampling3,r_periods03[j], u03[j],low03[j],sig03[j],14]) 
+    elif r_periods03.size==0:
+      #ui=03
+      det_periods.append([int(set1),0,0,0, 0,0,0,14])
+    return np.array(det_periods)
 
 def get_full_width(x: np.ndarray, y: np.ndarray, peak:np.ndarray,height: float = 0.5) -> float:
     """Function is used to calculate the error of the determined period using FWHM method.
