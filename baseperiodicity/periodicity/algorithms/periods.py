@@ -9,6 +9,79 @@ from sklearn.utils import shuffle
 from periodicity.utils.correlation import correlation_nd
 from periodicity.algorithms.wavelets import *
 
+
+def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, peaks1, hh1,tt1,yy1):
+    r_periods0=np.array(r_periods0)
+    r_periods1=np.array(r_periods1)
+    up0=np.array(up0)
+    low0=np.array(low0)
+    up1=np.array(up1)
+    low1=np.array(low1)
+    number_of_lcs = 50  # Number of LCs used for a simulation
+    print('prip')
+    if  len(r_periods0)==len(r_periods1):
+        index=np.where(np.isclose(r_periods0, r_periods1, rtol = 1e-01))
+          #r_periods=r_periods0[np.isclose(r_periods0, r_periods1, rtol = 1e-01)]
+        r_periods=np.take(r_periods0, index[0])
+        #r_periods=r_periods0[index]
+        up=list(np.take(up0,index[0]))
+        low=list(np.take(low0,index[0]))
+        # Determine significance
+        sig=[]
+        if len(r_periods.tolist())>0:
+         for i in range(len(index[0])):
+          peak_of_interests =index[0][i] # For wich peak we calculate significance
+          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks0, hh0, tt0, yy0, 80,800)
+          sig.append(1.-siger)
+    elif len(r_periods0) < len(r_periods1):
+        index_l= np.where(np.isclose(np.resize(r_periods0,len(r_periods1)), r_periods1, rtol = 1e-01)) 
+        sig=[]          
+       # r_periods = np.zeros(len(index_l[0] ))
+        #up=np.zeros(len(index_l[0] ))
+        #low=np.zeros(len(index_l[0] )) 
+        r_periods = np.take(r_periods1, index_l[0])
+         # up=up1[index_l[i]]
+          #low=low1[index_l[i]]
+        up=np.take(up1,index_l[0])
+        low=np.take(low1, index_l[0])
+        if len(r_periods.tolist())>0:
+         for i in range(len(index_l[0])):
+          peak_of_interests = index_l[0][i] # For wich peak we calculate significance
+          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks1,hh1, tt1, yy1, 80,800)
+          sig.append(1.-siger)
+
+          print('x')  
+    elif len(r_periods0) > len(r_periods1): 
+        print(len(r_periods0), len(r_periods1))
+        index_g= np.where(np.isclose(np.resize(r_periods1,len(r_periods0)), r_periods0, rtol = 1e-01)) 
+        sig=[]          
+       # r_periods = np.zeros(len(index_g[0] ))
+       # up=np.zeros(len(index_g[0] ))
+       # low=np.zeros(len(index_g[0])) 
+        r_periods = np.take(r_periods0, index_g[0])
+        up=np.take(up0,index_g[0])
+        low=np.take(low0, index_g[0])
+        if len(r_periods.tolist())>0:
+         for i in range(len(index_g[0])):
+         # up=up1[index_l[i]]
+          #low=low1[index_l[i]]       
+          peak_of_interests = index_g[0][i] # For wich peak we calculate significance
+          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks0,hh0, tt0, yy0, 80,800)
+          sig.append(1.-siger) 
+        #r_periods=r_periods0[index_g]
+        #up=up0[index_g]
+        #low=low0[index_g]
+        #sig=[]
+        #if len(r_periods.tolist())>0:
+         #for i in range(len(index)):
+          #peak_of_interests = peaks0[index_g[i]] # For wich peak we calculate significance
+          #bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks0, hh0, tt0, yy0, 80,800)
+          #sig.append(sig1)
+
+
+    return np.array(r_periods), np.array(up),np.array(low), np.array(sig)
+
+
 def get_full_width(x: np.ndarray, y: np.ndarray, peak:np.ndarray,height: float = 0.5) -> float:
     """Function is used to calculate the error of the determined period using FWHM method.
         The period uncertainty method of Schwarzenberg-Czerny requires the so called Mean Noise Power Level (MNPL)
