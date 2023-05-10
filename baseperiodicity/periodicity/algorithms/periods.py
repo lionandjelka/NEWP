@@ -42,7 +42,7 @@ def outliers(time,flux):
  # clean_err=err[good_indices]
   return clean_time, clean_flux#,clean_err
 
-def get_lc22(set1):
+def get_lc22(fs_gp,set1):
     demo_lc = fs_gp.get_group(set1)
     d0 = demo_lc[(demo_lc['filter'] == 1) ].sort_values(by=['mjd'])
     d1 = demo_lc[(demo_lc['filter'] == 2) ].sort_values(by=['mjd'])
@@ -143,9 +143,9 @@ def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, pe
 
 
     return np.array(r_periods), np.array(up),np.array(low), np.array(sig)
-def process1(set1):
+def process1(fs_gp,set1):
     det_periods=[]
-    tt0,yy0, tt1,yy1,tt2,yy2,tt3,yy3,sampling0,sampling1,sampling2,sampling3=get_lc22(set1)
+    tt0,yy0, tt1,yy1,tt2,yy2,tt3,yy3,sampling0,sampling1,sampling2,sampling3=get_lc22(fs_gp,set1)
     wwz_matrx0,  corr0, extent0 = hybrid2d(tt0, yy0, 80, 800, minfq=2000., maxfq=10.)
     peaks0,hh0,r_periods0, up0, low0 = periods (int(set1), corr0, 800, plot=False)
     wwzmatrx1, corr1, extent1 = hybrid2d(tt1,yy1, 80, 800, minfq=2000., maxfq=10.)
