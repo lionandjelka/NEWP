@@ -1,5 +1,6 @@
 
 import numpy as np
+import pandas as pd
 import json
 from scipy.signal import chirp, find_peaks, peak_widths
 from traitlets.traitlets import Integer
