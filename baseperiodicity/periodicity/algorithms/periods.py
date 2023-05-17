@@ -9,9 +9,40 @@ from sklearn.utils import shuffle
 from periodicity.utils.correlation import correlation_nd
 from periodicity.algorithms.wavelets import *
 
+global fs_gp, fs_df, object_df, td_objects
+fs_gp = None
+fs_df = None
+object_df = None
+td_objects = None
+
+def loadfsdf(path_source):
+    global fs_df
+    # Loading will take some time ...
+    fs_df = pd.read_parquet(path_source)
+    return fs_df
+
+def load_fsgp():
+    global fs_gp, fs_df
+    # groupby forcedsource table by objectid
+    fs_gp = fs_df.groupby('objectId')
+    return fs_gp
+
+def load_objectdf(path_obj):
+    global object_df,fs_df, td_objects
+    object_df=pd.read_parquet(path_obj)
+    # select the objects that have time domain data
+    lc_cols = [col for col in object_df.columns if 'Periodic' in col]
+    td_objects = object_df.dropna(subset=lc_cols, how='all').copy()
+    print("Data loaded and processed successfully.")
+    return td_objects
+
+
+
+
 ###get QSO which have u,g,r,i, light curves >=100 points
 
-def get_qso(fs_gp,set11):
+def get_qso(set11):
+    global fs_gp
     sett = []
     for set1 in range(len(set11)):
         demo_lc = fs_gp.get_group(str(set11[set1]))
@@ -42,7 +73,8 @@ def outliers(time,flux):
  # clean_err=err[good_indices]
   return clean_time, clean_flux#,clean_err
 
-def get_lc22(fs_gp,set1):
+def get_lc22(set1):
+    global fs_gp
     demo_lc = fs_gp.get_group(set1)
     d0 = demo_lc[(demo_lc['filter'] == 1) ].sort_values(by=['mjd'])
     d1 = demo_lc[(demo_lc['filter'] == 2) ].sort_values(by=['mjd'])
@@ -143,7 +175,8 @@ def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, pe
 
 
     return np.array(r_periods), np.array(up),np.array(low), np.array(sig)
-def process1(fs_gp,set1):
+def process1(set1):
+    global fs_gp
     det_periods=[]
     tt0,yy0, tt1,yy1,tt2,yy2,tt3,yy3,sampling0,sampling1,sampling2,sampling3=get_lc22(fs_gp,set1)
     wwz_matrx0,  corr0, extent0 = hybrid2d(tt0, yy0, 80, 800, minfq=2000., maxfq=10.)
