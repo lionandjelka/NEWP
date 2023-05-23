@@ -43,18 +43,36 @@ def load_objectdf(path_obj):
 ###get QSO which have u,g,r,i, light curves >=100 points
 
 def get_qso(set11):
-    global fs_gp
     sett = []
     for set1 in range(len(set11)):
         demo_lc = fs_gp.get_group(str(set11[set1]))
-        d0 = demo_lc[demo_lc['filter'] == 1].sort_values(by=['mjd'])
-        d1 = demo_lc[demo_lc['filter'] == 2].sort_values(by=['mjd'])
-        d2 = demo_lc[demo_lc['filter'] == 3].sort_values(by=['mjd'])
-        d3 = demo_lc[demo_lc['filter'] == 4].sort_values(by=['mjd'])
-        d4 = demo_lc[demo_lc['filter'] == 5].sort_values(by=['mjd'])      
+        d0 = demo_lc[demo_lc['filter'] == 1].sort_values(by=['mjd']).dropna()
+        d1 = demo_lc[demo_lc['filter'] == 2].sort_values(by=['mjd']).dropna()
+        d2 = demo_lc[demo_lc['filter'] == 3].sort_values(by=['mjd']).dropna()
+        d3 = demo_lc[demo_lc['filter'] == 4].sort_values(by=['mjd']).dropna()
+        d4 = demo_lc[demo_lc['filter'] == 5].sort_values(by=['mjd']).dropna()      
         if (len(d0) >= 100) and (len(d1) >=100) and (len(d2) > 100) and (len(d3) >=100):
             sett.append(str(set11[set1]))
     return sett
+#def outliers(time,flux):
+# Compute the Z-Score for each point in the light curve
+#  z_scores = np.abs((flux - np.mean(flux)) / np.std(flux))
+
+# Define a threshold for outlier detection
+#  threshold = 3.0
+
+# Find the indices of the non-outlier points. 
+#  good_indices = np.where(z_scores <= threshold)[0]
+
+# Create a new array with only the non-outlier points
+#  clean_flux = flux[good_indices]
+#  clean_time = time[good_indices]
+#  if len(clean_flux)<0.1*len(flux):
+#     clean_time=time
+#     clean_flux=flux
+ # clean_err=err[good_indices]
+#  return clean_time, clean_flux#,clean_err
+
 def outliers(time,flux):
 # Compute the Z-Score for each point in the light curve
   z_scores = np.abs((flux - np.mean(flux)) / np.std(flux))
@@ -71,16 +89,29 @@ def outliers(time,flux):
   if len(clean_flux)<0.1*len(flux):
      clean_time=time
      clean_flux=flux
+ #THIS PART IS ADDITIONAL AS WE FOUND THAT SOME POINTS COULD BE PROBLEMATIC EVEN AFTER 3SIGMA
  # clean_err=err[good_indices]
-  return clean_time, clean_flux#,clean_err
+      # Find the differences between consecutive points
+  differences = np.diff(clean_flux)
+
+    # Find the index of the outlier point
+  outlier_index = np.argmax(differences) + 1
+  if np.max(differences)>0.3:
+    # Remove the outlier point
+   cleaned_mag = np.delete(clean_flux, outlier_index)
+   cleaned_time=np.delete(clean_time, outlier_index)
+  else:
+   cleaned_time=clean_time
+   cleaned_mag=clean_flux
+  return cleaned_time, cleaned_mag#,clean_err
 
 def get_lc22(set1):
     global fs_gp
     demo_lc = fs_gp.get_group(set1)
-    d0 = demo_lc[(demo_lc['filter'] == 1) ].sort_values(by=['mjd'])
-    d1 = demo_lc[(demo_lc['filter'] == 2) ].sort_values(by=['mjd'])
-    d2 = demo_lc[(demo_lc['filter'] == 3) ].sort_values(by=['mjd'])
-    d3 = demo_lc[(demo_lc['filter'] == 4) ].sort_values(by=['mjd'])
+    d0 = demo_lc[(demo_lc['filter'] == 1) ].sort_values(by=['mjd']).dropna()
+    d1 = demo_lc[(demo_lc['filter'] == 2) ].sort_values(by=['mjd']).dropna()
+    d2 = demo_lc[(demo_lc['filter'] == 3) ].sort_values(by=['mjd']).dropna()
+    d3 = demo_lc[(demo_lc['filter'] == 4) ].sort_values(by=['mjd']).dropna()
   #  d4 = demo_lc[(demo_lc['filter'] == 5) ].sort_values(by=['mjd'])
     tt00 = d0['mjd'].to_numpy()
     yy00 = d0['psMag'].to_numpy()
