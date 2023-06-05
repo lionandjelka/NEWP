@@ -5,4 +5,5 @@
 </li>
 </ul>
 Here are the latest results.
-Here are the latest results. [Click here](https://github.com/lionandjelka/NEWP/blob/main/baseperiodicity/agc_dc_results/interactive_plot.html) to view the interactive plot.
+<b> iou.csv <b>: Here are the latest results of the pipeline tested on BURA IDAC Croatia and AI Platforma Serbia. For given band pairs we calculate IoU metric. As metric is closer to 1 it means that we get more overlapping of detcted periods and their relative error.
+ 
