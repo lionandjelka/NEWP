@@ -5,4 +5,4 @@
 </li>
 </ul>
 Here are the latest results.
-<a href="baseperiodicity/agc_dc_results/interactive_plot.html">  </a>.
+<a href="baseperiodicity/agc_dc_results/interactive_plot.html"> results </a>.
