@@ -8,9 +8,8 @@ Here are the latest results.
 <li>
  <b> all.csv </b>: Here are the latest results of the pipeline tested on BURA IDAC Croatia and AI Platforma Serbia for detected periods in given pairs of bands.
  </li>
- /<ul>
- ,li>
+ </ul>
+ <li>
 <b> iou.csv </b>: We accompany all.csv with metric Intersection over Union. For given band pairs we calculate IoU metric. As metric is closer to 1 it means that we get more overlapping of detcted periods and their relative error. 
  </li>
-
   </ul>
