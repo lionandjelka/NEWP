@@ -12,7 +12,7 @@ from traitlets.traitlets import Integer
 
 
 
-def compute_frequency_grid(Nn, minfq = 500, maxfq = 10):
+def compute_frequency_grid(Nn, minfq = 2000, maxfq = 10):
     fmin =1/minfq
     fmax = 1/maxfq
     df = (fmax - fmin) / Nn
@@ -20,7 +20,7 @@ def compute_frequency_grid(Nn, minfq = 500, maxfq = 10):
 
 
 
-def inp_param(ntau,ngrid, f = 2, minfq = 500, maxfq = 10):
+def inp_param(ntau,ngrid, f = 2, minfq = 2000, maxfq = 10):
    
     """Calculate the imput parameteres of WWZ
 
@@ -59,7 +59,7 @@ def inp_param(ntau,ngrid, f = 2, minfq = 500, maxfq = 10):
 
 
 
-def wwt(tt, mag,ntau,ngrid, f = 2, minfq = 500, maxfq = 10,  method = 'linear'):
+def wwt(tt, mag,ntau,ngrid, f = 2, minfq = 2000, maxfq = 10,  method = 'linear'):
     """Calculate the wwz of the given signal
 
         Parameters
@@ -85,7 +85,7 @@ def wwt(tt, mag,ntau,ngrid, f = 2, minfq = 500, maxfq = 10,  method = 'linear'):
 
 
 
-def hybrid2d(tt, mag, ntau,ngrid, f = 2, minfq = 500, maxfq = 10,  method = 'linear'):
+def hybrid2d(tt, mag, ntau,ngrid, f = 2, minfq = 2000, maxfq = 10,  method = 'linear'):
     """Perform hybrid2d method on given data 
 
         Parameters
