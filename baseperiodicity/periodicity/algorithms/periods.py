@@ -277,7 +277,7 @@ def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, pe
 
 
     return np.array(r_periods), np.array(up),np.array(low), np.array(sig)
-def process1tiktok(set1,set1,initial_period, damping_factor_amplitude, damping_factor_frequency, snr=None, inject_signal=False):
+def process1tiktok(set1,initial_period, damping_factor_amplitude, damping_factor_frequency, snr=None, inject_signal=False):
     global fs_gp
     det_periods=[]
     tt0,yy0, tt1,yy1,tt2,yy2,tt3,yy3,sampling0,sampling1,sampling2,sampling3, tik0,tik1,tik2,tik3=get_lctiktok(set1,initial_period, damping_factor_amplitude, damping_factor_frequency, snr, inject_signal)
