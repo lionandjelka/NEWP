@@ -450,7 +450,7 @@ def get_full_width(x: np.ndarray, y: np.ndarray, peak:np.ndarray,height: float =
 
 
 
-def periods (lcID, data, ngrid, plot = False, save = False, peakHeight = 0.6, prominence = 0.7, minfq = 500, maxfq = 10, xlim = None): 
+def periods (lcID, data, ngrid, plot = False, save = False, peakHeight = 0.6, prominence = 0.7, minfq = 2000, maxfq = 10, xlim = None): 
     """Perform period determination for the output of hybrid2d data.
 
         Parameters
@@ -564,7 +564,7 @@ def periods (lcID, data, ngrid, plot = False, save = False, peakHeight = 0.6, pr
     
     
     
-def signif_johnoson(numlc, peak, idx_peaks, yax, tt, yy, ntau,ngrid, f = 2, peakHeight = 0.6, minfq = 500, maxfq = 10, algorithm ='wwz', method = 'linear'):
+def signif_johnoson(numlc, peak, idx_peaks, yax, tt, yy, ntau,ngrid, f = 2, peakHeight = 0.6, minfq = 2000, maxfq = 10, algorithm ='wwz', method = 'linear'):
     """Determination of significance usign Johnson method
 
         Parameters
