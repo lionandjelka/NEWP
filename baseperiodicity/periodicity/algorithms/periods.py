@@ -228,7 +228,7 @@ def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, pe
         if len(r_periods.tolist())>0:
          for i in range(len(index[0])):
           peak_of_interests =index[0][i] # For wich peak we calculate significance
-          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks0, hh0, tt0, yy0, 80,800)
+          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks0, hh0, tt0, yy0, 80,3200)
           sig.append(1.-siger)
     elif len(r_periods0) < len(r_periods1):
         index_l= np.where(np.isclose(np.resize(r_periods0,len(r_periods1)), r_periods1, rtol = 1e-01)) 
@@ -244,7 +244,7 @@ def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, pe
         if len(r_periods.tolist())>0:
          for i in range(len(index_l[0])):
           peak_of_interests = index_l[0][i] # For wich peak we calculate significance
-          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks1,hh1, tt1, yy1, 80,800)
+          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks1,hh1, tt1, yy1, 80,3200)
           sig.append(1.-siger)
 
           print('x')  
@@ -263,7 +263,7 @@ def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, pe
          # up=up1[index_l[i]]
           #low=low1[index_l[i]]       
           peak_of_interests = index_g[0][i] # For wich peak we calculate significance
-          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks0,hh0, tt0, yy0, 80,800)
+          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks0,hh0, tt0, yy0, 80,3200)
           sig.append(1.-siger) 
         #r_periods=r_periods0[index_g]
         #up=up0[index_g]
