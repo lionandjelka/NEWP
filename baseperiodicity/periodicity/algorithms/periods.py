@@ -277,6 +277,48 @@ def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, pe
 
 
     return np.array(r_periods), np.array(up),np.array(low), np.array(sig)
+def process1tiktok(set1,set1,initial_period, damping_factor_amplitude, damping_factor_frequency, snr=None, inject_signal=False):
+    global fs_gp
+    det_periods=[]
+    tt0,yy0, tt1,yy1,tt2,yy2,tt3,yy3,sampling0,sampling1,sampling2,sampling3, tik0,tik1,tik2,tik3=get_lctiktok(set1,initial_period, damping_factor_amplitude, damping_factor_frequency, snr, inject_signal)
+    wwz_matrx0,  corr0, extent0 = hybrid2d(tt0, yy0, 80, 800, minfq=2000., maxfq=10.)
+    peaks0,hh0,r_periods0, up0, low0 = periods (int(set1), corr0, 800, plot=False)
+    wwzmatrx1, corr1, extent1 = hybrid2d(tt1,yy1, 80, 800, minfq=2000., maxfq=10.)
+    peaks1,hh1,r_periods1, up1, low1 = periods (int(set1), corr1, 800, plot=False)
+    wwz_matrx2,  corr2, extent2 = hybrid2d(tt2, yy2, 80, 800, minfq=2000., maxfq=10.)
+    peaks2,hh2,r_periods2, up2, low2 = periods (int(set1), corr2, 800, plot=False)
+    wwzmatrx3, corr3, extent3 = hybrid2d(tt3,yy3, 80, 800, minfq=2000., maxfq=10.)
+    peaks3,hh3,r_periods3, up3, low3 = periods (int(set1), corr3, 800, plot=False)
+    r_periods01, u01,low01,sig01=same_periods(r_periods0,r_periods1,up0,low0,up1,low1,peaks0,hh0,tt0,yy0, peaks1,hh1,tt1,yy1)
+    print(set1)
+   # for j in range(len(r_periods01)):
+    if  r_periods01.size>0 and  u01.size>0 and low01.size>0 and sig01.size>0: 
+      for j in range(len(r_periods01.ravel())):
+        #u=1,g=2,r=3,i=4,z=5
+        det_periods.append([int(set1),sampling0,sampling1,r_periods01[j], u01[j],low01[j], sig01[j], 12])
+    elif r_periods01.size==0:
+        det_periods.append([int(set1),0,0,0, 0,0,0,12])
+   
+    r_periods02, u02,low02,sig02=same_periods(r_periods0,r_periods2,up0,low0,up2,low2,peaks0, hh0,tt0,yy0, peaks2,hh2,tt2,yy2)
+
+   # for j in range(len(r_periods01)):
+    if  r_periods02.size>0 and u02.size>0 and low02.size>0 and sig02.size>0:
+      #ur=02
+      for j in range(len(r_periods02.ravel())):
+       det_periods.append([int(set1),sampling0,sampling2,r_periods02[j], u02[j],low02[j],sig02[j], 13])
+    elif r_periods02.size==0:
+       #ur=02
+       det_periods.append([int(set1),0,0,0, 0,0,0,13])
+    r_periods03, u03,low03,sig03=same_periods(r_periods0,r_periods3, up0,low0, up3,low3,peaks0, hh0,tt0,yy0, peaks3,hh3,tt3,yy3)
+    if  r_periods03.size  and  u03.size>0 and low03.size>0 and sig03.size>0:
+     for j in range(len(r_periods03.ravel())):
+       #ui=03
+      det_periods.append([int(set1),sampling0,sampling3,r_periods03[j], u03[j],low03[j],sig03[j],14]) 
+    elif r_periods03.size==0:
+      #ui=03
+      det_periods.append([int(set1),0,0,0, 0,0,0,14])
+    return np.array(det_periods)
+    
 def process1(set1):
     global fs_gp
     det_periods=[]
