@@ -228,7 +228,7 @@ def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, pe
         if len(r_periods.tolist())>0:
          for i in range(len(index[0])):
           peak_of_interests =index[0][i] # For wich peak we calculate significance
-          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks0, hh0, tt0, yy0, 80,3200)
+          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks0, hh0, tt0, yy0, 120,3200)
           sig.append(1.-siger)
     elif len(r_periods0) < len(r_periods1):
         index_l= np.where(np.isclose(np.resize(r_periods0,len(r_periods1)), r_periods1, rtol = 1e-01)) 
@@ -244,7 +244,7 @@ def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, pe
         if len(r_periods.tolist())>0:
          for i in range(len(index_l[0])):
           peak_of_interests = index_l[0][i] # For wich peak we calculate significance
-          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks1,hh1, tt1, yy1, 80,3200)
+          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks1,hh1, tt1, yy1, 120,3200)
           sig.append(1.-siger)
 
           print('x')  
@@ -263,7 +263,7 @@ def same_periods(r_periods0,r_periods1,up0,low0, up1,low1,peaks0,hh0,tt0,yy0, pe
          # up=up1[index_l[i]]
           #low=low1[index_l[i]]       
           peak_of_interests = index_g[0][i] # For wich peak we calculate significance
-          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks0,hh0, tt0, yy0, 80,3200)
+          bins, bins11, sig1, siger = signif_johnoson(number_of_lcs, peak_of_interests ,peaks0,hh0, tt0, yy0, 120,3200)
           sig.append(1.-siger) 
         #r_periods=r_periods0[index_g]
         #up=up0[index_g]
@@ -281,13 +281,13 @@ def process1tiktok(set1,initial_period, damping_factor_amplitude, damping_factor
     global fs_gp
     det_periods=[]
     tt0,yy0, tt1,yy1,tt2,yy2,tt3,yy3,sampling0,sampling1,sampling2,sampling3, tik0,tik1,tik2,tik3=get_lctiktok(set1,initial_period, damping_factor_amplitude, damping_factor_frequency, snr, inject_signal)
-    wwz_matrx0,  corr0, extent0 = hybrid2d(tt0, yy0, 80, 3200, minfq=2000., maxfq=10.)
+    wwz_matrx0,  corr0, extent0 = hybrid2d(tt0, yy0, 120, 3200, minfq=2000., maxfq=10.)
     peaks0,hh0,r_periods0, up0, low0 = periods (int(set1), corr0, 3200, plot=False)
-    wwzmatrx1, corr1, extent1 = hybrid2d(tt1,yy1, 80, 3200, minfq=2000., maxfq=10.)
+    wwzmatrx1, corr1, extent1 = hybrid2d(tt1,yy1, 120, 3200, minfq=2000., maxfq=10.)
     peaks1,hh1,r_periods1, up1, low1 = periods (int(set1), corr1, 3200, plot=False)
-    wwz_matrx2,  corr2, extent2 = hybrid2d(tt2, yy2, 80, 3200, minfq=2000., maxfq=10.)
+    wwz_matrx2,  corr2, extent2 = hybrid2d(tt2, yy2, 120, 3200, minfq=2000., maxfq=10.)
     peaks2,hh2,r_periods2, up2, low2 = periods (int(set1), corr2, 3200, plot=False)
-    wwzmatrx3, corr3, extent3 = hybrid2d(tt3,yy3, 80, 3200, minfq=2000., maxfq=10.)
+    wwzmatrx3, corr3, extent3 = hybrid2d(tt3,yy3, 120, 3200, minfq=2000., maxfq=10.)
     peaks3,hh3,r_periods3, up3, low3 = periods (int(set1), corr3, 3200, plot=False)
     r_periods01, u01,low01,sig01=same_periods(r_periods0,r_periods1,up0,low0,up1,low1,peaks0,hh0,tt0,yy0, peaks1,hh1,tt1,yy1)
     print(set1)
