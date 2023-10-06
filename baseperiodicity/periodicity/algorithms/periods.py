@@ -281,13 +281,13 @@ def process1tiktok(set1,initial_period, damping_factor_amplitude, damping_factor
     global fs_gp
     det_periods=[]
     tt0,yy0, tt1,yy1,tt2,yy2,tt3,yy3,sampling0,sampling1,sampling2,sampling3, tik0,tik1,tik2,tik3=get_lctiktok(set1,initial_period, damping_factor_amplitude, damping_factor_frequency, snr, inject_signal)
-    wwz_matrx0,  corr0, extent0 = hybrid2d(tt0, yy0, 120, 3200, minfq=2000., maxfq=10.)
+    wwz_matrx0,  corr0, extent0 = hybrid2d(tt0, yy0, 120, 3200, minfq=1500., maxfq=100.)
     peaks0,hh0,r_periods0, up0, low0 = periods (int(set1), corr0, 3200, plot=False)
-    wwzmatrx1, corr1, extent1 = hybrid2d(tt1,yy1, 120, 3200, minfq=2000., maxfq=10.)
+    wwzmatrx1, corr1, extent1 = hybrid2d(tt1,yy1, 120, 3200, minfq=1500., maxfq=100.)
     peaks1,hh1,r_periods1, up1, low1 = periods (int(set1), corr1, 3200, plot=False)
-    wwz_matrx2,  corr2, extent2 = hybrid2d(tt2, yy2, 120, 3200, minfq=2000., maxfq=10.)
+    wwz_matrx2,  corr2, extent2 = hybrid2d(tt2, yy2, 120, 3200, minfq=1500., maxfq=100.)
     peaks2,hh2,r_periods2, up2, low2 = periods (int(set1), corr2, 3200, plot=False)
-    wwzmatrx3, corr3, extent3 = hybrid2d(tt3,yy3, 120, 3200, minfq=2000., maxfq=10.)
+    wwzmatrx3, corr3, extent3 = hybrid2d(tt3,yy3, 120, 3200, minfq=1500., maxfq=100.)
     peaks3,hh3,r_periods3, up3, low3 = periods (int(set1), corr3, 3200, plot=False)
     r_periods01, u01,low01,sig01=same_periods(r_periods0,r_periods1,up0,low0,up1,low1,peaks0,hh0,tt0,yy0, peaks1,hh1,tt1,yy1)
     print(set1)
@@ -450,7 +450,7 @@ def get_full_width(x: np.ndarray, y: np.ndarray, peak:np.ndarray,height: float =
 
 
 
-def periods (lcID, data, ngrid, plot = False, save = False, peakHeight = 0.6, prominence = 0.7, minfq = 2000, maxfq = 10, xlim = None): 
+def periods (lcID, data, ngrid, plot = False, save = False, peakHeight = 0.6, prominence = 0.7, minfq = 1500, maxfq = 100, xlim = None): 
     """Perform period determination for the output of hybrid2d data.
 
         Parameters
@@ -564,7 +564,7 @@ def periods (lcID, data, ngrid, plot = False, save = False, peakHeight = 0.6, pr
     
     
     
-def signif_johnoson(numlc, peak, idx_peaks, yax, tt, yy, ntau,ngrid, f = 2, peakHeight = 0.6, minfq = 2000, maxfq = 10, algorithm ='wwz', method = 'linear'):
+def signif_johnoson(numlc, peak, idx_peaks, yax, tt, yy, ntau,ngrid, f = 2, peakHeight = 0.6, minfq = 1500, maxfq = 100, algorithm ='wwz', method = 'linear'):
     """Determination of significance usign Johnson method
 
         Parameters
